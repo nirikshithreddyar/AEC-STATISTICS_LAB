@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discrete Probability Distributions</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success-bg: #eff6ff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav {
+      max-width: 1050px;
+      margin: 0 auto;
+      min-height: 64px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    nav {
+      display: flex;
+      gap: 6px;
+    }
+
+    nav button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 13px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #eff6ff;
+      color: var(--primary);
+    }
+
+    main {
+      max-width: 1050px;
+      margin: 0 auto;
+      padding: 44px 20px 60px;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .hero {
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 32px;
+      letter-spacing: -0.5px;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    p {
+      line-height: 1.6;
+      color: var(--muted);
+    }
+
+    .subtitle {
+      max-width: 700px;
+      margin: 0;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 26px;
+      margin-top: 24px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 7px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .selected-values {
+      margin-top: 20px;
+      padding: 12px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: 14px;
+    }
+
+    .actions {
+      margin-top: 14px;
+    }
+
+    button.primary {
+      background: var(--primary);
+      color: white;
+      border: 0;
+      border-radius: 7px;
+      padding: 11px 18px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button.primary:hover { background: var(--primary-dark); }
+
+    .result {
+      margin-top: 24px;
+      padding: 18px;
+      background: var(--success-bg);
+      border: 1px solid #dbeafe;
+      border-radius: 9px;
+      display: none;
+    }
+
+    .result.show { display: block; }
+
+    .result-label {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .result-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .stat-name {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .formula {
+      font-family: Georgia, serif;
+      font-size: 18px;
+      margin: 12px 0;
+      color: var(--text);
+    }
+
+    .placeholder {
+      text-align: center;
+      padding: 55px 20px;
+    }
+
+    .placeholder h2 { margin-bottom: 8px; }
+
+    .error {
+      color: #b91c1c;
+      margin-top: 12px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .pmf-chart-card {
+      margin-top: 24px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    #pmfChart, #poissonChart, #geometricChart {
+      display: block;
+      width: 100%;
+      min-width: 680px;
+      height: 390px;
+      background: #ffffff;
+      border-radius: 8px;
+      cursor: crosshair;
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      display: none;
+      pointer-events: none;
+      padding: 9px 11px;
+      background: #0f172a;
+      color: #ffffff;
+      border-radius: 7px;
+      font-size: 13px;
+      line-height: 1.45;
+      white-space: nowrap;
+      box-shadow: 0 5px 16px rgba(15, 23, 42, 0.18);
+      z-index: 3;
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .legend-bar {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      background: var(--primary);
+    }
+
+    .legend-line {
+      width: 22px;
+      border-top: 2px dashed #64748b;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      padding: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 700px) {
+      .nav { flex-direction: column; align-items: flex-start; padding: 14px 20px; }
+      nav { width: 100%; overflow-x: auto; }
+      nav button { flex: 0 0 auto; }
+      main { padding-top: 30px; }
+      h1 { font-size: 27px; }
+      .grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <div class="brand">Discrete Probability Distributions</div>
+    <nav>
+      <button class="nav-btn active" data-page="home">Home</button>
+      <button class="nav-btn" data-page="binomial">Binomial</button>
+      <button class="nav-btn" data-page="poisson">Poisson</button>
+      <button class="nav-btn" data-page="geometric">Geometric</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section id="home" class="page active">
+    <div class="hero">
+      <h1>Discrete Probability Distributions</h1>
+      <p class="subtitle">
+        An educational laboratory application for learning and experimenting
+        with common discrete probability distributions.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Laboratory Modules</h2>
+      <p><strong>Binomial Distribution</strong> — Functional</p>
+      <p><strong>Poisson Distribution</strong> — Functional</p>
+      <p><strong>Geometric Distribution</strong> — Functional</p>
+    </div>
+  </section>
+
+  <section id="binomial" class="page">
+    <div class="hero">
+      <h1>Binomial Distribution</h1>
+      <p class="subtitle">
+        Calculate the probability of getting exactly <em>x</em> successes in
+        <em>n</em> independent trials with success probability <em>p</em>.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Probability Calculator</h2>
+
+      <div class="grid">
+        <div class="input-group">
+          <label for="n">Number of trials (n)</label>
+          <input id="n" type="number" min="1" step="1" value="20" />
+          <div class="hint">Non-negative integer</div>
+        </div>
+
+        <div class="input-group">
+          <label for="p">Probability of success (p)</label>
+          <input id="p" type="number" min="0" max="1" step="0.01" value="0.35" />
+          <div class="hint">Enter a value from 0 to 1</div>
+        </div>
+
+      </div>
+
+      <div class="selected-values">
+        <strong>Selected values:</strong> n = <span id="selectedN">20</span>, p = <span id="selectedP">0.35</span>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="calculate">Update Values</button>
+      </div>
+
+      <div class="error" id="error"></div>
+
+      <div class="stats-grid" id="stats">
+        <div class="stat-card">
+          <div class="stat-name">Mean</div>
+          <div class="stat-value" id="mean">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Variance</div>
+          <div class="stat-value" id="variance">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Standard Deviation</div>
+          <div class="stat-value" id="sd">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Second Moment E[X²]</div>
+          <div class="stat-value" id="second">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Skewness</div>
+          <div class="stat-value" id="skew">—</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px; padding: 22px;">
+        <h2>CDF Calculator</h2>
+        <p>Calculate the probability of getting k or fewer successes.</p>
+        <div class="input-group" style="max-width: 320px;">
+          <label for="cdfK">Number of successes (k)</label>
+          <input id="cdfK" type="number" min="0" step="1" value="7" />
+          <div class="hint">Integer from 0 to n</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="calculateCDF">Calculate CDF</button>
+        </div>
+        <div class="error" id="cdfError"></div>
+        <div class="result" id="cdfResult">
+          <div class="result-label">P(X ≤ k)</div>
+          <div class="result-value" id="cdfValue">—</div>
+          <div class="formula" id="cdfFormula">P(X ≤ k) = Σ P(X = i), i = 0 to k</div>
+          <div class="result-label" style="margin-top: 16px;">P(X &gt; k)</div>
+          <div class="result-value" id="cdfComplementValue">—</div>
+          <div class="formula">P(X &gt; k) = 1 - P(X ≤ k)</div>
+          <p id="cdfMeaning" style="margin-bottom: 0;">P(X ≤ k) means the probability of getting k or fewer successes.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px; padding: 22px;">
+        <h2>PMF Calculator</h2>
+        <p>For X ~ Binomial(n, p), calculate the probability of exactly k successes.</p>
+        <div class="input-group" style="max-width: 320px;">
+          <label for="k">Number of successes (k)</label>
+          <input id="k" type="number" min="0" step="1" value="7" />
+          <div class="hint">Integer from 0 to n</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="calculatePMF">Calculate P(X = k)</button>
+        </div>
+        <div class="error" id="pmfError"></div>
+        <div class="result" id="pmfResult">
+          <div class="result-label">Probability</div>
+          <div class="result-value" id="pmfValue">—</div>
+          <div class="formula" id="pmfFormula">P(X=k) = C(n,k) p^k (1-p)^(n-k)</div>
+          <p id="pmfMeaning" style="margin-bottom: 0;">This is the probability of getting exactly k successes in n independent trials.</p>
+        </div>
+      </div>
+
+      <div class="card pmf-chart-card" style="padding: 22px;">
+        <h2>Binomial PMF Graph</h2>
+        <p>Probability mass function for X = 0, 1, 2, ..., n using the selected n and p.</p>
+        <div class="chart-wrap" id="pmfChartWrap">
+          <canvas id="pmfChart" aria-label="Binomial probability mass function bar chart"></canvas>
+          <div class="chart-tooltip" id="pmfTooltip"></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-bar"></span> PMF P(X)</span>
+          <span class="legend-item"><span class="legend-line"></span> Mean</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="poisson" class="page">
+    <div class="hero">
+      <h1>Poisson Distribution</h1>
+      <p class="subtitle">
+        Calculate probabilities for a Poisson random variable with mean (λ),
+        then explore its statistics, PMF, CDF, and probability mass graph.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Probability Calculator</h2>
+      <div class="grid">
+        <div class="input-group">
+          <label for="poissonLambda">Mean (λ)</label>
+          <input id="poissonLambda" type="number" min="0.000001" step="0.01" value="5" />
+          <div class="hint">λ must be greater than 0</div>
+        </div>
+      </div>
+
+      <div class="selected-values">
+        <strong>Selected value:</strong> λ = <span id="poissonSelectedLambda">5</span>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="updatePoisson">Update Values</button>
+      </div>
+
+      <div class="error" id="poissonInputError"></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-name">Mean</div>
+          <div class="stat-value" id="poissonMeanStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Variance</div>
+          <div class="stat-value" id="poissonVarianceStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Standard Deviation</div>
+          <div class="stat-value" id="poissonSdStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Second Moment E[X²]</div>
+          <div class="stat-value" id="poissonSecondStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Skewness</div>
+          <div class="stat-value" id="poissonSkewStat">—</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px; padding: 22px;">
+        <h2>PMF Calculator</h2>
+        <p>For X ~ Poisson(λ), calculate the probability of exactly k events.</p>
+        <div class="input-group" style="max-width: 320px;">
+          <label for="poissonK">Value of k</label>
+          <input id="poissonK" type="number" min="0" step="1" value="2" />
+          <div class="hint">Non-negative integer</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="calculatePoissonPMF">Calculate P(X = k)</button>
+        </div>
+        <div class="error" id="poissonPmfError"></div>
+        <div class="result" id="poissonPmfResult">
+          <div class="result-label">Probability</div>
+          <div class="result-value" id="poissonPmfValue">—</div>
+          <div class="formula" id="poissonPmfFormula">P(X=k) = e^(-λ) λ^k / k!</div>
+          <p id="poissonPmfMeaning" style="margin-bottom: 0;">This is the probability of observing exactly k events when the average number of events is λ.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px; padding: 22px;">
+        <h2>CDF Calculator</h2>
+        <p>Calculate the probability of observing k or fewer events.</p>
+        <div class="input-group" style="max-width: 320px;">
+          <label for="poissonCdfK">Value of k</label>
+          <input id="poissonCdfK" type="number" min="0" step="1" value="2" />
+          <div class="hint">Non-negative integer</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="calculatePoissonCDF">Calculate CDF</button>
+        </div>
+        <div class="error" id="poissonCdfError"></div>
+        <div class="result" id="poissonCdfResult">
+          <div class="result-label">P(X ≤ k)</div>
+          <div class="result-value" id="poissonCdfValue">—</div>
+          <div class="formula" id="poissonCdfFormula">P(X ≤ k) = Σ P(X=i), i = 0 to k</div>
+          <div class="result-label" style="margin-top: 16px;">P(X &gt; k)</div>
+          <div class="result-value" id="poissonCdfComplementValue">—</div>
+          <div class="formula">P(X &gt; k) = 1 - P(X ≤ k)</div>
+          <p id="poissonCdfMeaning" style="margin-bottom: 0;">P(X ≤ k) means the probability of getting k or fewer events.</p>
+        </div>
+      </div>
+
+      <div class="card pmf-chart-card" style="margin-top: 24px; padding: 22px;">
+        <h2>Poisson PMF Graph</h2>
+        <p>Probability mass function for the displayed range of X using the selected λ.</p>
+        <div class="chart-wrap" id="poissonChartWrap">
+          <canvas id="poissonChart" aria-label="Poisson probability mass function bar chart"></canvas>
+          <div class="chart-tooltip" id="poissonTooltip"></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-bar"></span> PMF P(X)</span>
+          <span class="legend-item"><span class="legend-line"></span> Mean</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="geometric" class="page">
+    <div class="hero">
+      <h1>Geometric Distribution</h1>
+      <p class="subtitle">
+        Calculate the probability that the first success occurs on trial k,
+        then explore the geometric statistics, PMF, CDF, and graph.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Probability Calculator</h2>
+      <div class="grid">
+        <div class="input-group">
+          <label for="geometricP">Probability of success (p)</label>
+          <input id="geometricP" type="number" min="0.000001" max="1" step="0.01" value="0.5" />
+          <div class="hint">p must be greater than 0 and at most 1</div>
+        </div>
+      </div>
+
+      <div class="selected-values">
+        <strong>Selected value:</strong> p = <span id="geometricSelectedP">0.5</span>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="updateGeometric">Update Values</button>
+      </div>
+
+      <div class="error" id="geometricInputError"></div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-name">Mean</div>
+          <div class="stat-value" id="geometricMeanStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Variance</div>
+          <div class="stat-value" id="geometricVarianceStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Standard Deviation</div>
+          <div class="stat-value" id="geometricSdStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Second Moment E[X²]</div>
+          <div class="stat-value" id="geometricSecondStat">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-name">Skewness</div>
+          <div class="stat-value" id="geometricSkewStat">—</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px; padding: 22px;">
+        <h2>PMF Calculator</h2>
+        <p>For X ~ Geometric(p), where X is the trial number of the first success.</p>
+        <div class="input-group" style="max-width: 320px;">
+          <label for="geometricK">Value of k</label>
+          <input id="geometricK" type="number" min="1" step="1" value="2" />
+          <div class="hint">Positive integer, k ≥ 1</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="calculateGeometricPMF">Calculate P(X = k)</button>
+        </div>
+        <div class="error" id="geometricPmfError"></div>
+        <div class="result" id="geometricPmfResult">
+          <div class="result-label">Probability</div>
+          <div class="result-value" id="geometricPmfValue">—</div>
+          <div class="formula" id="geometricPmfFormula">P(X=k) = p(1-p)^(k-1)</div>
+          <p id="geometricPmfMeaning" style="margin-bottom: 0;">This is the probability that the first success occurs on trial k.</p>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 24px; padding: 22px;">
+        <h2>CDF Calculator</h2>
+        <p>Calculate the probability that the first success occurs by trial k.</p>
+        <div class="input-group" style="max-width: 320px;">
+          <label for="geometricCdfK">Value of k</label>
+          <input id="geometricCdfK" type="number" min="1" step="1" value="2" />
+          <div class="hint">Positive integer, k ≥ 1</div>
+        </div>
+        <div class="actions">
+          <button class="primary" id="calculateGeometricCDF">Calculate CDF</button>
+        </div>
+        <div class="error" id="geometricCdfError"></div>
+        <div class="result" id="geometricCdfResult">
+          <div class="result-label">P(X ≤ k)</div>
+          <div class="result-value" id="geometricCdfValue">—</div>
+          <div class="formula" id="geometricCdfFormula">P(X ≤ k) = 1 - (1-p)^k</div>
+          <div class="result-label" style="margin-top: 16px;">P(X &gt; k)</div>
+          <div class="result-value" id="geometricCdfComplementValue">—</div>
+          <div class="formula">P(X &gt; k) = (1-p)^k</div>
+          <p id="geometricCdfMeaning" style="margin-bottom: 0;">P(X ≤ k) means the probability that the first success occurs on or before trial k.</p>
+        </div>
+      </div>
+
+      <div class="card pmf-chart-card" style="margin-top: 24px; padding: 22px;">
+        <h2>Geometric PMF Graph</h2>
+        <p>Probability mass function for the first-success trial number over a useful displayed range.</p>
+        <div class="chart-wrap" id="geometricChartWrap">
+          <canvas id="geometricChart" aria-label="Geometric probability mass function bar chart"></canvas>
+          <div class="chart-tooltip" id="geometricTooltip"></div>
+        </div>
+        <div class="chart-legend">
+          <span class="legend-item"><span class="legend-bar"></span> PMF P(X)</span>
+          <span class="legend-item"><span class="legend-line"></span> Mean</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Undergraduate AIML Laboratory
+</footer>
+
+<script>
+  const navButtons = document.querySelectorAll(".nav-btn");
+  const pages = document.querySelectorAll(".page");
+
+  navButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const pageId = button.dataset.page;
+
+      navButtons.forEach(btn => btn.classList.remove("active"));
+      pages.forEach(page => page.classList.remove("active"));
+
+      button.classList.add("active");
+      document.getElementById(pageId).classList.add("active");
+
+      // Canvas elements have zero dimensions while their page is hidden.
+      // Redraw after the target page becomes visible so Poisson and
+      // Geometric charts are sized correctly on first visit.
+      requestAnimationFrame(() => {
+        if (pageId === "binomial") drawPmfChart();
+        if (pageId === "poisson") drawPoissonChart();
+        if (pageId === "geometric") drawGeometricChart();
+      });
+    });
+  });
+
+  function formatNumber(value) {
+    return value.toFixed(6).replace(/\.?0+$/, "");
+  }
+
+  function validateInputs() {
+    const n = Number(document.getElementById("n").value);
+    const p = Number(document.getElementById("p").value);
+    const error = document.getElementById("error");
+
+    error.style.display = "none";
+
+    if (!Number.isInteger(n) || n <= 0) {
+      error.textContent = "n must be a positive integer.";
+      error.style.display = "block";
+      return null;
+    }
+
+    if (Number.isNaN(p) || p < 0 || p > 1) {
+      error.textContent = "p must be between 0 and 1.";
+      error.style.display = "block";
+      return null;
+    }
+
+    document.getElementById("selectedN").textContent = n;
+    document.getElementById("selectedP").textContent = p;
+    return { n, p };
+  }
+
+  function updateStatistics() {
+    const values = validateInputs();
+    if (!values) return;
+
+    const { n, p } = values;
+    const mean = n * p;
+    const variance = n * p * (1 - p);
+    const standardDeviation = Math.sqrt(variance);
+    const secondMoment = variance + Math.pow(mean, 2);
+    const skewness = variance === 0 ? 0 : (1 - 2 * p) / Math.sqrt(variance);
+
+    document.getElementById("mean").textContent = formatNumber(mean);
+    document.getElementById("variance").textContent = formatNumber(variance);
+    document.getElementById("sd").textContent = formatNumber(standardDeviation);
+    document.getElementById("second").textContent = formatNumber(secondMoment);
+    document.getElementById("skew").textContent = formatNumber(skewness);
+  }
+
+  function combination(n, k) {
+    if (k < 0 || k > n) return 0;
+    k = Math.min(k, n - k);
+    let result = 1;
+    for (let i = 1; i <= k; i++) {
+      result = result * (n - k + i) / i;
+    }
+    return result;
+  }
+
+  function calculatePMF() {
+    const values = validateInputs();
+    const error = document.getElementById("pmfError");
+    const result = document.getElementById("pmfResult");
+    error.style.display = "none";
+    result.classList.remove("show");
+    if (!values) return;
+
+    const { n, p } = values;
+    const k = Number(document.getElementById("k").value);
+
+    if (!Number.isInteger(k) || k < 0 || k > n) {
+      error.textContent = "k must be an integer satisfying 0 ≤ k ≤ n.";
+      error.style.display = "block";
+      return;
+    }
+
+    const probability = combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+
+    document.getElementById("pmfValue").textContent = probability.toFixed(8);
+    document.getElementById("pmfFormula").textContent =
+      `P(X=${k}) = C(${n},${k}) (${p})^${k} (1-${p})^${n-k}`;
+    document.getElementById("pmfMeaning").textContent =
+      `This result is the probability of getting exactly ${k} successes in ${n} independent trials.`;
+    result.classList.add("show");
+  }
+
+  document.getElementById("calculate").addEventListener("click", () => {
+    updateStatistics();
+    drawPmfChart();
+  });
+  document.getElementById("n").addEventListener("input", () => {
+    updateStatistics();
+    drawPmfChart();
+  });
+  document.getElementById("p").addEventListener("input", () => {
+    updateStatistics();
+    drawPmfChart();
+  });
+  document.getElementById("calculatePMF").addEventListener("click", calculatePMF);
+  function calculateCDF() {
+    const values = validateInputs();
+    const error = document.getElementById("cdfError");
+    const result = document.getElementById("cdfResult");
+    error.style.display = "none";
+    result.classList.remove("show");
+    if (!values) return;
+
+    const { n, p } = values;
+    const k = Number(document.getElementById("cdfK").value);
+
+    if (!Number.isInteger(k) || k < 0 || k > n) {
+      error.textContent = "k must be an integer satisfying 0 ≤ k ≤ n.";
+      error.style.display = "block";
+      return;
+    }
+
+    let cdf = 0;
+    for (let i = 0; i <= k; i++) {
+      cdf += combination(n, i) * Math.pow(p, i) * Math.pow(1 - p, n - i);
+    }
+    const complement = 1 - cdf;
+
+    document.getElementById("cdfValue").textContent = cdf.toFixed(8);
+    document.getElementById("cdfComplementValue").textContent = complement.toFixed(8);
+    document.getElementById("cdfFormula").textContent =
+      `P(X ≤ ${k}) = Σ P(X=i), i = 0 to ${k}`;
+    document.getElementById("cdfMeaning").textContent =
+      "P(X ≤ k) means the probability of getting k or fewer successes.";
+    result.classList.add("show");
+  }
+
+  document.getElementById("k").addEventListener("input", () => {
+    if (document.getElementById("pmfResult").classList.contains("show")) calculatePMF();
+  });
+  document.getElementById("calculateCDF").addEventListener("click", calculateCDF);
+  document.getElementById("cdfK").addEventListener("input", () => {
+    if (document.getElementById("cdfResult").classList.contains("show")) calculateCDF();
+  });
+
+  const pmfCanvas = document.getElementById("pmfChart");
+  const pmfCtx = pmfCanvas.getContext("2d");
+  const pmfChartWrap = document.getElementById("pmfChartWrap");
+  const pmfTooltip = document.getElementById("pmfTooltip");
+  let pmfBars = [];
+
+  function preparePmfCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = pmfCanvas.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    pmfCanvas.width = Math.round(width * dpr);
+    pmfCanvas.height = Math.round(height * dpr);
+    pmfCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { width, height };
+  }
+
+  function drawPmfChart() {
+    const values = validateInputs();
+    if (!values) {
+      pmfCtx.clearRect(0, 0, pmfCanvas.clientWidth, pmfCanvas.clientHeight);
+      pmfBars = [];
+      return;
+    }
+
+    const { n, p } = values;
+    const probabilities = [];
+    for (let x = 0; x <= n; x++) {
+      probabilities.push(combination(n, x) * Math.pow(p, x) * Math.pow(1 - p, n - x));
+    }
+
+    const { width, height } = preparePmfCanvas();
+    const margin = { top: 22, right: 22, bottom: 56, left: 58 };
+    const plotWidth = Math.max(1, width - margin.left - margin.right);
+    const plotHeight = Math.max(1, height - margin.top - margin.bottom);
+    const maxProbability = Math.max(...probabilities, 0.01);
+    const yMax = maxProbability * 1.15;
+    const baselineY = margin.top + plotHeight;
+    const step = plotWidth / probabilities.length;
+    const barWidth = Math.max(3, Math.min(28, step * 0.68));
+
+    pmfCtx.clearRect(0, 0, width, height);
+    pmfCtx.font = "12px Arial";
+    pmfCtx.textBaseline = "middle";
+
+    // Grid and Y-axis labels.
+    pmfCtx.strokeStyle = "#e2e8f0";
+    pmfCtx.lineWidth = 1;
+    pmfCtx.fillStyle = "#64748b";
+    const yTicks = 5;
+    for (let i = 0; i <= yTicks; i++) {
+      const y = margin.top + plotHeight - (plotHeight * i / yTicks);
+      pmfCtx.beginPath();
+      pmfCtx.moveTo(margin.left, y);
+      pmfCtx.lineTo(width - margin.right, y);
+      pmfCtx.stroke();
+      pmfCtx.textAlign = "right";
+      pmfCtx.fillText((yMax * i / yTicks).toFixed(3), margin.left - 8, y);
+    }
+
+    // Axes.
+    pmfCtx.strokeStyle = "#94a3b8";
+    pmfCtx.lineWidth = 1.2;
+    pmfCtx.beginPath();
+    pmfCtx.moveTo(margin.left, margin.top);
+    pmfCtx.lineTo(margin.left, baselineY);
+    pmfCtx.lineTo(width - margin.right, baselineY);
+    pmfCtx.stroke();
+
+    // Bars.
+    pmfBars = [];
+    probabilities.forEach((probability, x) => {
+      const centerX = margin.left + step * (x + 0.5);
+      const barHeight = (probability / yMax) * plotHeight;
+      const barX = centerX - barWidth / 2;
+      const barY = baselineY - barHeight;
+
+      pmfCtx.fillStyle = "#2563eb";
+      pmfCtx.fillRect(barX, barY, barWidth, barHeight);
+
+      pmfBars.push({ x, probability, left: barX, right: barX + barWidth, top: barY, bottom: baselineY });
+    });
+
+    // X-axis tick labels. Show every value for manageable n, otherwise thin labels only.
+    const labelEvery = n <= 30 ? 1 : Math.ceil((n + 1) / 30);
+    pmfCtx.fillStyle = "#64748b";
+    pmfCtx.textAlign = "center";
+    pmfCtx.textBaseline = "top";
+    pmfBars.forEach(bar => {
+      if (bar.x % labelEvery === 0 || bar.x === n) {
+        const centerX = (bar.left + bar.right) / 2;
+        pmfCtx.fillText(String(bar.x), centerX, baselineY + 8);
+      }
+    });
+
+    // Axis labels.
+    pmfCtx.fillStyle = "#0f172a";
+    pmfCtx.font = "600 13px Arial";
+    pmfCtx.textAlign = "center";
+    pmfCtx.textBaseline = "bottom";
+    pmfCtx.fillText("Number of successes X", margin.left + plotWidth / 2, height - 8);
+
+    pmfCtx.save();
+    pmfCtx.translate(14, margin.top + plotHeight / 2);
+    pmfCtx.rotate(-Math.PI / 2);
+    pmfCtx.textBaseline = "top";
+    pmfCtx.fillText("Probability P(X)", 0, 0);
+    pmfCtx.restore();
+
+    // Mean reference line.
+    const mean = n * p;
+    const meanPosition = Math.min(probabilities.length - 0.5, Math.max(0.5, mean + 0.5));
+    const meanX = margin.left + step * meanPosition;
+    pmfCtx.save();
+    pmfCtx.strokeStyle = "#64748b";
+    pmfCtx.lineWidth = 2;
+    pmfCtx.setLineDash([7, 6]);
+    pmfCtx.beginPath();
+    pmfCtx.moveTo(meanX, margin.top);
+    pmfCtx.lineTo(meanX, baselineY);
+    pmfCtx.stroke();
+    pmfCtx.restore();
+
+    // Mean label.
+    pmfCtx.fillStyle = "#475569";
+    pmfCtx.font = "600 12px Arial";
+    pmfCtx.textAlign = "center";
+    pmfCtx.textBaseline = "bottom";
+    pmfCtx.fillText(`Mean = ${formatNumber(mean)}`, meanX, margin.top - 4);
+  }
+
+  function showPmfTooltip(event) {
+    if (!pmfBars.length) return;
+    const rect = pmfCanvas.getBoundingClientRect();
+    const canvasX = event.clientX - rect.left;
+    const canvasY = event.clientY - rect.top;
+    const bar = pmfBars.find(item => canvasX >= item.left && canvasX <= item.right && canvasY >= item.top && canvasY <= item.bottom);
+
+    if (!bar) {
+      pmfTooltip.style.display = "none";
+      return;
+    }
+
+    pmfTooltip.innerHTML = `<strong>X = ${bar.x}</strong><br>P(X=${bar.x}) = ${bar.probability.toFixed(8)}`;
+    pmfTooltip.style.display = "block";
+
+    const wrapRect = pmfChartWrap.getBoundingClientRect();
+    const tooltipRect = pmfTooltip.getBoundingClientRect();
+    let left = event.clientX - wrapRect.left + 12;
+    let top = event.clientY - wrapRect.top - tooltipRect.height - 12;
+
+    if (left + tooltipRect.width > pmfChartWrap.clientWidth - 6) {
+      left = event.clientX - wrapRect.left - tooltipRect.width - 12;
+    }
+    if (top < 6) top = event.clientY - wrapRect.top + 12;
+
+    pmfTooltip.style.left = `${Math.max(6, left)}px`;
+    pmfTooltip.style.top = `${Math.max(6, top)}px`;
+  }
+
+  pmfCanvas.addEventListener("mousemove", showPmfTooltip);
+  pmfCanvas.addEventListener("mouseleave", () => {
+    pmfTooltip.style.display = "none";
+  });
+  window.addEventListener("resize", drawPmfChart);
+
+  updateStatistics();
+  drawPmfChart();
+
+  // ---------------- Poisson Distribution ----------------
+  function poissonFactorial(n) {
+    let result = 1;
+    for (let i = 2; i <= n; i++) result *= i;
+    return result;
+  }
+
+  function poissonPMF(lambda, k) {
+    if (k < 0 || !Number.isInteger(k)) return 0;
+    return Math.exp(-lambda) * Math.pow(lambda, k) / poissonFactorial(k);
+  }
+
+  function getPoissonInputs() {
+    const lambda = Number(document.getElementById("poissonLambda").value);
+    const error = document.getElementById("poissonInputError");
+    error.style.display = "none";
+
+    if (Number.isNaN(lambda) || lambda <= 0) {
+      error.textContent = "λ must be greater than 0.";
+      error.style.display = "block";
+      return null;
+    }
+    return { lambda };
+  }
+
+  function updatePoisson() {
+    const values = getPoissonInputs();
+    if (!values) return;
+    const { lambda } = values;
+
+    document.getElementById("poissonSelectedLambda").textContent = formatNumber(lambda);
+    document.getElementById("poissonMeanStat").textContent = formatNumber(lambda);
+    document.getElementById("poissonVarianceStat").textContent = formatNumber(lambda);
+    document.getElementById("poissonSdStat").textContent = formatNumber(Math.sqrt(lambda));
+    document.getElementById("poissonSecondStat").textContent = formatNumber(lambda + lambda * lambda);
+    document.getElementById("poissonSkewStat").textContent = formatNumber(1 / Math.sqrt(lambda));
+
+    drawPoissonChart();
+    if (document.getElementById("poissonPmfResult").classList.contains("show")) calculatePoissonPMF();
+    if (document.getElementById("poissonCdfResult").classList.contains("show")) calculatePoissonCDF();
+  }
+
+  function calculatePoissonPMF() {
+    const values = getPoissonInputs();
+    const error = document.getElementById("poissonPmfError");
+    const result = document.getElementById("poissonPmfResult");
+    error.style.display = "none";
+    result.classList.remove("show");
+    if (!values) return;
+
+    const { lambda } = values;
+    const k = Number(document.getElementById("poissonK").value);
+    if (!Number.isInteger(k) || k < 0) {
+      error.textContent = "k must be a non-negative integer.";
+      error.style.display = "block";
+      return;
+    }
+
+    const probability = poissonPMF(lambda, k);
+    document.getElementById("poissonPmfValue").textContent = probability.toFixed(8);
+    document.getElementById("poissonPmfFormula").textContent =
+      `P(X=${k}) = e^(-${formatNumber(lambda)}) × (${formatNumber(lambda)})^${k} / ${k}!`;
+    document.getElementById("poissonPmfMeaning").textContent =
+      `This is the probability of observing exactly ${k} events when the average number of events is ${formatNumber(lambda)}.`;
+    result.classList.add("show");
+  }
+
+  function calculatePoissonCDF() {
+    const values = getPoissonInputs();
+    const error = document.getElementById("poissonCdfError");
+    const result = document.getElementById("poissonCdfResult");
+    error.style.display = "none";
+    result.classList.remove("show");
+    if (!values) return;
+
+    const { lambda } = values;
+    const k = Number(document.getElementById("poissonCdfK").value);
+    if (!Number.isInteger(k) || k < 0) {
+      error.textContent = "k must be a non-negative integer.";
+      error.style.display = "block";
+      return;
+    }
+
+    let cdf = 0;
+    for (let i = 0; i <= k; i++) cdf += poissonPMF(lambda, i);
+    const complement = Math.max(0, 1 - cdf);
+
+    document.getElementById("poissonCdfValue").textContent = cdf.toFixed(8);
+    document.getElementById("poissonCdfComplementValue").textContent = complement.toFixed(8);
+    document.getElementById("poissonCdfFormula").textContent =
+      `P(X ≤ ${k}) = Σ P(X=i), i = 0 to ${k}`;
+    document.getElementById("poissonCdfMeaning").textContent =
+      "P(X ≤ k) means the probability of getting k or fewer events.";
+    result.classList.add("show");
+  }
+
+  const poissonCanvas = document.getElementById("poissonChart");
+  const poissonCtx = poissonCanvas.getContext("2d");
+  const poissonChartWrap = document.getElementById("poissonChartWrap");
+  const poissonTooltip = document.getElementById("poissonTooltip");
+  let poissonBars = [];
+
+  function preparePoissonCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = poissonCanvas.getBoundingClientRect();
+    const width = rect.width || poissonCanvas.parentElement.clientWidth || 680;
+    const height = rect.height || 390;
+    poissonCanvas.width = Math.round(width * dpr);
+    poissonCanvas.height = Math.round(height * dpr);
+    poissonCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { width, height };
+  }
+
+  function poissonDisplayMax(lambda) {
+    return Math.max(10, Math.ceil(lambda + 4 * Math.sqrt(lambda)));
+  }
+
+  function drawPoissonChart() {
+    const values = getPoissonInputs();
+    if (!values) return;
+    const { lambda } = values;
+    const maxX = poissonDisplayMax(lambda);
+    const probabilities = Array.from({ length: maxX + 1 }, (_, x) => poissonPMF(lambda, x));
+
+    const { width, height } = preparePoissonCanvas();
+    const margin = { top: 28, right: 22, bottom: 56, left: 58 };
+    const plotWidth = Math.max(1, width - margin.left - margin.right);
+    const plotHeight = Math.max(1, height - margin.top - margin.bottom);
+    const maxProbability = Math.max(...probabilities, 0.01);
+    const yMax = maxProbability * 1.15;
+    const baselineY = margin.top + plotHeight;
+    const step = plotWidth / probabilities.length;
+    const barWidth = Math.max(3, Math.min(28, step * 0.68));
+
+    poissonCtx.clearRect(0, 0, width, height);
+    poissonCtx.font = "12px Arial";
+    poissonCtx.textBaseline = "middle";
+
+    poissonCtx.strokeStyle = "#e2e8f0";
+    poissonCtx.lineWidth = 1;
+    poissonCtx.fillStyle = "#64748b";
+    for (let i = 0; i <= 5; i++) {
+      const y = margin.top + plotHeight - plotHeight * i / 5;
+      poissonCtx.beginPath();
+      poissonCtx.moveTo(margin.left, y);
+      poissonCtx.lineTo(width - margin.right, y);
+      poissonCtx.stroke();
+      poissonCtx.textAlign = "right";
+      poissonCtx.fillText((yMax * i / 5).toFixed(3), margin.left - 8, y);
+    }
+
+    poissonCtx.strokeStyle = "#94a3b8";
+    poissonCtx.lineWidth = 1.2;
+    poissonCtx.beginPath();
+    poissonCtx.moveTo(margin.left, margin.top);
+    poissonCtx.lineTo(margin.left, baselineY);
+    poissonCtx.lineTo(width - margin.right, baselineY);
+    poissonCtx.stroke();
+
+    poissonBars = [];
+    probabilities.forEach((probability, x) => {
+      const centerX = margin.left + step * (x + 0.5);
+      const barHeight = (probability / yMax) * plotHeight;
+      const barX = centerX - barWidth / 2;
+      const barY = baselineY - barHeight;
+      poissonCtx.fillStyle = "#2563eb";
+      poissonCtx.fillRect(barX, barY, barWidth, barHeight);
+      poissonBars.push({ x, probability, left: barX, right: barX + barWidth, top: barY, bottom: baselineY });
+    });
+
+    poissonCtx.fillStyle = "#64748b";
+    poissonCtx.textAlign = "center";
+    poissonCtx.textBaseline = "top";
+    const labelEvery = maxX <= 30 ? 1 : Math.ceil((maxX + 1) / 30);
+    poissonBars.forEach(bar => {
+      if (bar.x % labelEvery === 0 || bar.x === maxX) {
+        poissonCtx.fillText(String(bar.x), (bar.left + bar.right) / 2, baselineY + 8);
+      }
+    });
+
+    poissonCtx.fillStyle = "#0f172a";
+    poissonCtx.font = "600 13px Arial";
+    poissonCtx.textAlign = "center";
+    poissonCtx.textBaseline = "bottom";
+    poissonCtx.fillText("Number of events X", margin.left + plotWidth / 2, height - 8);
+
+    poissonCtx.save();
+    poissonCtx.translate(14, margin.top + plotHeight / 2);
+    poissonCtx.rotate(-Math.PI / 2);
+    poissonCtx.textBaseline = "top";
+    poissonCtx.fillText("Probability P(X)", 0, 0);
+    poissonCtx.restore();
+
+    const meanX = margin.left + step * Math.min(maxX + 0.5, lambda + 0.5);
+    poissonCtx.save();
+    poissonCtx.strokeStyle = "#64748b";
+    poissonCtx.lineWidth = 2;
+    poissonCtx.setLineDash([7, 6]);
+    poissonCtx.beginPath();
+    poissonCtx.moveTo(meanX, margin.top);
+    poissonCtx.lineTo(meanX, baselineY);
+    poissonCtx.stroke();
+    poissonCtx.restore();
+
+    poissonCtx.fillStyle = "#475569";
+    poissonCtx.font = "600 12px Arial";
+    poissonCtx.textAlign = "center";
+    poissonCtx.textBaseline = "bottom";
+    poissonCtx.fillText(`Mean = ${formatNumber(lambda)}`, meanX, margin.top - 4);
+  }
+
+  function showPoissonTooltip(event) {
+    const rect = poissonCanvas.getBoundingClientRect();
+    const canvasX = event.clientX - rect.left;
+    const canvasY = event.clientY - rect.top;
+    const bar = poissonBars.find(item => canvasX >= item.left && canvasX <= item.right && canvasY >= item.top && canvasY <= item.bottom);
+    if (!bar) {
+      poissonTooltip.style.display = "none";
+      return;
+    }
+    poissonTooltip.innerHTML = `<strong>X = ${bar.x}</strong><br>P(X=${bar.x}) = ${bar.probability.toFixed(8)}`;
+    poissonTooltip.style.display = "block";
+    const wrapRect = poissonChartWrap.getBoundingClientRect();
+    const tooltipRect = poissonTooltip.getBoundingClientRect();
+    let left = event.clientX - wrapRect.left + 12;
+    let top = event.clientY - wrapRect.top - tooltipRect.height - 12;
+    if (left + tooltipRect.width > poissonChartWrap.clientWidth - 6) left = event.clientX - wrapRect.left - tooltipRect.width - 12;
+    if (top < 6) top = event.clientY - wrapRect.top + 12;
+    poissonTooltip.style.left = `${Math.max(6, left)}px`;
+    poissonTooltip.style.top = `${Math.max(6, top)}px`;
+  }
+
+  document.getElementById("updatePoisson").addEventListener("click", updatePoisson);
+  document.getElementById("poissonLambda").addEventListener("input", updatePoisson);
+  document.getElementById("calculatePoissonPMF").addEventListener("click", calculatePoissonPMF);
+  document.getElementById("poissonK").addEventListener("input", () => {
+    if (document.getElementById("poissonPmfResult").classList.contains("show")) calculatePoissonPMF();
+  });
+  document.getElementById("calculatePoissonCDF").addEventListener("click", calculatePoissonCDF);
+  document.getElementById("poissonCdfK").addEventListener("input", () => {
+    if (document.getElementById("poissonCdfResult").classList.contains("show")) calculatePoissonCDF();
+  });
+  poissonCanvas.addEventListener("mousemove", showPoissonTooltip);
+  poissonCanvas.addEventListener("mouseleave", () => { poissonTooltip.style.display = "none"; });
+  window.addEventListener("resize", drawPoissonChart);
+
+  // ---------------- Geometric Distribution ----------------
+  function getGeometricInputs() {
+    const p = Number(document.getElementById("geometricP").value);
+    const error = document.getElementById("geometricInputError");
+    error.style.display = "none";
+
+    if (Number.isNaN(p) || p <= 0 || p > 1) {
+      error.textContent = "p must be greater than 0 and at most 1.";
+      error.style.display = "block";
+      return null;
+    }
+    return { p };
+  }
+
+  function geometricPMF(p, k) {
+    return k >= 1 ? p * Math.pow(1 - p, k - 1) : 0;
+  }
+
+  function updateGeometric() {
+    const values = getGeometricInputs();
+    if (!values) return;
+    const { p } = values;
+    const mean = 1 / p;
+    const variance = (1 - p) / (p * p);
+    const sd = Math.sqrt(variance);
+    const second = variance + mean * mean;
+    const skew = (2 - p) / Math.sqrt(1 - p);
+
+    document.getElementById("geometricSelectedP").textContent = formatNumber(p);
+    document.getElementById("geometricMeanStat").textContent = formatNumber(mean);
+    document.getElementById("geometricVarianceStat").textContent = formatNumber(variance);
+    document.getElementById("geometricSdStat").textContent = formatNumber(sd);
+    document.getElementById("geometricSecondStat").textContent = formatNumber(second);
+    document.getElementById("geometricSkewStat").textContent = Number.isFinite(skew) ? formatNumber(skew) : "—";
+
+    drawGeometricChart();
+    if (document.getElementById("geometricPmfResult").classList.contains("show")) calculateGeometricPMF();
+    if (document.getElementById("geometricCdfResult").classList.contains("show")) calculateGeometricCDF();
+  }
+
+  function calculateGeometricPMF() {
+    const values = getGeometricInputs();
+    const error = document.getElementById("geometricPmfError");
+    const result = document.getElementById("geometricPmfResult");
+    error.style.display = "none";
+    result.classList.remove("show");
+    if (!values) return;
+
+    const { p } = values;
+    const k = Number(document.getElementById("geometricK").value);
+    if (!Number.isInteger(k) || k < 1) {
+      error.textContent = "k must be a positive integer (k ≥ 1).";
+      error.style.display = "block";
+      return;
+    }
+
+    const probability = geometricPMF(p, k);
+    document.getElementById("geometricPmfValue").textContent = probability.toFixed(8);
+    document.getElementById("geometricPmfFormula").textContent =
+      `P(X=${k}) = (${formatNumber(p)}) × (1-${formatNumber(p)})^${k - 1}`;
+    document.getElementById("geometricPmfMeaning").textContent =
+      `This is the probability that the first success occurs on trial ${k}.`;
+    result.classList.add("show");
+  }
+
+  function calculateGeometricCDF() {
+    const values = getGeometricInputs();
+    const error = document.getElementById("geometricCdfError");
+    const result = document.getElementById("geometricCdfResult");
+    error.style.display = "none";
+    result.classList.remove("show");
+    if (!values) return;
+
+    const { p } = values;
+    const k = Number(document.getElementById("geometricCdfK").value);
+    if (!Number.isInteger(k) || k < 1) {
+      error.textContent = "k must be a positive integer (k ≥ 1).";
+      error.style.display = "block";
+      return;
+    }
+
+    const complement = Math.pow(1 - p, k);
+    const cdf = 1 - complement;
+    document.getElementById("geometricCdfValue").textContent = cdf.toFixed(8);
+    document.getElementById("geometricCdfComplementValue").textContent = complement.toFixed(8);
+    document.getElementById("geometricCdfFormula").textContent =
+      `P(X ≤ ${k}) = 1 - (1-${formatNumber(p)})^${k}`;
+    document.getElementById("geometricCdfMeaning").textContent =
+      "P(X ≤ k) means the probability that the first success occurs on or before trial k.";
+    result.classList.add("show");
+  }
+
+  const geometricCanvas = document.getElementById("geometricChart");
+  const geometricCtx = geometricCanvas.getContext("2d");
+  const geometricChartWrap = document.getElementById("geometricChartWrap");
+  const geometricTooltip = document.getElementById("geometricTooltip");
+  let geometricBars = [];
+
+  function prepareGeometricCanvas() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = geometricCanvas.getBoundingClientRect();
+    const width = rect.width || geometricCanvas.parentElement.clientWidth || 680;
+    const height = rect.height || 390;
+    geometricCanvas.width = Math.round(width * dpr);
+    geometricCanvas.height = Math.round(height * dpr);
+    geometricCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { width, height };
+  }
+
+  function geometricDisplayMax(p) {
+    const mean = 1 / p;
+    const sd = Math.sqrt((1 - p) / (p * p));
+    return Math.min(50, Math.max(10, Math.ceil(mean + 4 * sd)));
+  }
+
+  function drawGeometricChart() {
+    const values = getGeometricInputs();
+    if (!values) return;
+    const { p } = values;
+    const maxX = geometricDisplayMax(p);
+    const probabilities = Array.from({ length: maxX }, (_, i) => geometricPMF(p, i + 1));
+
+    const { width, height } = prepareGeometricCanvas();
+    const margin = { top: 28, right: 22, bottom: 56, left: 58 };
+    const plotWidth = Math.max(1, width - margin.left - margin.right);
+    const plotHeight = Math.max(1, height - margin.top - margin.bottom);
+    const maxProbability = Math.max(...probabilities, 0.01);
+    const yMax = maxProbability * 1.15;
+    const baselineY = margin.top + plotHeight;
+    const step = plotWidth / probabilities.length;
+    const barWidth = Math.max(3, Math.min(28, step * 0.68));
+
+    geometricCtx.clearRect(0, 0, width, height);
+    geometricCtx.font = "12px Arial";
+    geometricCtx.textBaseline = "middle";
+
+    geometricCtx.strokeStyle = "#e2e8f0";
+    geometricCtx.lineWidth = 1;
+    geometricCtx.fillStyle = "#64748b";
+    for (let i = 0; i <= 5; i++) {
+      const y = margin.top + plotHeight - plotHeight * i / 5;
+      geometricCtx.beginPath();
+      geometricCtx.moveTo(margin.left, y);
+      geometricCtx.lineTo(width - margin.right, y);
+      geometricCtx.stroke();
+      geometricCtx.textAlign = "right";
+      geometricCtx.fillText((yMax * i / 5).toFixed(3), margin.left - 8, y);
+    }
+
+    geometricCtx.strokeStyle = "#94a3b8";
+    geometricCtx.lineWidth = 1.2;
+    geometricCtx.beginPath();
+    geometricCtx.moveTo(margin.left, margin.top);
+    geometricCtx.lineTo(margin.left, baselineY);
+    geometricCtx.lineTo(width - margin.right, baselineY);
+    geometricCtx.stroke();
+
+    geometricBars = [];
+    probabilities.forEach((probability, index) => {
+      const x = index + 1;
+      const centerX = margin.left + step * (index + 0.5);
+      const barHeight = (probability / yMax) * plotHeight;
+      const barX = centerX - barWidth / 2;
+      const barY = baselineY - barHeight;
+      geometricCtx.fillStyle = "#2563eb";
+      geometricCtx.fillRect(barX, barY, barWidth, barHeight);
+      geometricBars.push({ x, probability, left: barX, right: barX + barWidth, top: barY, bottom: baselineY });
+    });
+
+    geometricCtx.fillStyle = "#64748b";
+    geometricCtx.textAlign = "center";
+    geometricCtx.textBaseline = "top";
+    const labelEvery = maxX <= 30 ? 1 : Math.ceil(maxX / 30);
+    geometricBars.forEach(bar => {
+      if ((bar.x - 1) % labelEvery === 0 || bar.x === maxX) {
+        geometricCtx.fillText(String(bar.x), (bar.left + bar.right) / 2, baselineY + 8);
+      }
+    });
+
+    geometricCtx.fillStyle = "#0f172a";
+    geometricCtx.font = "600 13px Arial";
+    geometricCtx.textAlign = "center";
+    geometricCtx.textBaseline = "bottom";
+    geometricCtx.fillText("Trial number X", margin.left + plotWidth / 2, height - 8);
+
+    geometricCtx.save();
+    geometricCtx.translate(14, margin.top + plotHeight / 2);
+    geometricCtx.rotate(-Math.PI / 2);
+    geometricCtx.textBaseline = "top";
+    geometricCtx.fillText("Probability P(X)", 0, 0);
+    geometricCtx.restore();
+
+    const mean = 1 / p;
+    const meanX = margin.left + step * Math.min(maxX - 0.5, Math.max(0.5, mean - 0.5));
+    geometricCtx.save();
+    geometricCtx.strokeStyle = "#64748b";
+    geometricCtx.lineWidth = 2;
+    geometricCtx.setLineDash([7, 6]);
+    geometricCtx.beginPath();
+    geometricCtx.moveTo(meanX, margin.top);
+    geometricCtx.lineTo(meanX, baselineY);
+    geometricCtx.stroke();
+    geometricCtx.restore();
+
+    geometricCtx.fillStyle = "#475569";
+    geometricCtx.font = "600 12px Arial";
+    geometricCtx.textAlign = "center";
+    geometricCtx.textBaseline = "bottom";
+    geometricCtx.fillText(`Mean = ${formatNumber(mean)}`, meanX, margin.top - 4);
+  }
+
+  function showGeometricTooltip(event) {
+    const rect = geometricCanvas.getBoundingClientRect();
+    const canvasX = event.clientX - rect.left;
+    const canvasY = event.clientY - rect.top;
+    const bar = geometricBars.find(item => canvasX >= item.left && canvasX <= item.right && canvasY >= item.top && canvasY <= item.bottom);
+    if (!bar) {
+      geometricTooltip.style.display = "none";
+      return;
+    }
+    geometricTooltip.innerHTML = `<strong>X = ${bar.x}</strong><br>P(X=${bar.x}) = ${bar.probability.toFixed(8)}`;
+    geometricTooltip.style.display = "block";
+    const wrapRect = geometricChartWrap.getBoundingClientRect();
+    const tooltipRect = geometricTooltip.getBoundingClientRect();
+    let left = event.clientX - wrapRect.left + 12;
+    let top = event.clientY - wrapRect.top - tooltipRect.height - 12;
+    if (left + tooltipRect.width > geometricChartWrap.clientWidth - 6) left = event.clientX - wrapRect.left - tooltipRect.width - 12;
+    if (top < 6) top = event.clientY - wrapRect.top + 12;
+    geometricTooltip.style.left = `${Math.max(6, left)}px`;
+    geometricTooltip.style.top = `${Math.max(6, top)}px`;
+  }
+
+  document.getElementById("updateGeometric").addEventListener("click", updateGeometric);
+  document.getElementById("geometricP").addEventListener("input", updateGeometric);
+  document.getElementById("calculateGeometricPMF").addEventListener("click", calculateGeometricPMF);
+  document.getElementById("geometricK").addEventListener("input", () => {
+    if (document.getElementById("geometricPmfResult").classList.contains("show")) calculateGeometricPMF();
+  });
+  document.getElementById("calculateGeometricCDF").addEventListener("click", calculateGeometricCDF);
+  document.getElementById("geometricCdfK").addEventListener("input", () => {
+    if (document.getElementById("geometricCdfResult").classList.contains("show")) calculateGeometricCDF();
+  });
+  geometricCanvas.addEventListener("mousemove", showGeometricTooltip);
+  geometricCanvas.addEventListener("mouseleave", () => { geometricTooltip.style.display = "none"; });
+  window.addEventListener("resize", drawGeometricChart);
+
+  updatePoisson();
+  updateGeometric();
+
+  // Initial canvas draws are deferred until the browser has completed layout.
+  requestAnimationFrame(() => {
+    drawPmfChart();
+    drawPoissonChart();
+    drawGeometricChart();
+  });
+
+</script>
+
+</body>
+</html>
